@@ -179,5 +179,3 @@ def five_click_stick_figure():
 
     win.get_mouse()
     win.close()
-
-five_click_stick_figure()
