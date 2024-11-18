@@ -1,6 +1,8 @@
 import math
-from graphix import Circle, Window, Point
+import random
+from graphix import Circle, Window, Point, Text, Rectangle
 # Remember to update the line above if you are using other Graphix objects
+from pract5 import distance_between_points
 
 
 def greet(name):
@@ -88,9 +90,9 @@ def draw_circle(win, centre, radius, colour):
 
 # For exercise 8
 def draw_coloured_eye(win, centre, radius, colour):
-    eye = Circle(centre,radius)
-    eye.fill_colour = colour
-    eye.draw(win)
+    draw_circle(win, centre, radius, "white")
+    draw_circle(win, centre, radius//2, colour)
+    draw_circle(win, centre, radius//4, "black")
 
 def fast_food_order():
     price = float(input("Enter the price of the order: "))
@@ -149,3 +151,105 @@ def numbered_square(n):
             line += str(y-x)
             line += " "
         print(line)
+
+def eye_picker():
+    win = Window()
+    x = int(input("Enter the x coordinate for the center: "))
+    y = int(input("Enter the y coordinate for the center: "))
+
+    coord = [x,y]
+    valid_colour = ["blue","green","grey","brown"]
+
+    for _ in range(2):
+        if coord[_] > 400 or coord[_] < 0:
+            return("Eye centre not in window")
+    
+    r = int(input("Enter the radius: "))
+    colour = input("Enter the colour: ")
+    if colour not in valid_colour:
+        return("Not a valid eye colour")
+
+    draw_coloured_eye(win,Point(x,y),r,colour)
+
+def draw_patch_window():
+    win = Window()
+    for i in range(5):
+        for j in range(5):
+            square = Rectangle(Point(20*i,20*j),Point(20*(i+1),20*(j+1)))
+            square.outline_colour = "red"
+            square.draw(win)
+    
+    for i in range(5):
+        for j in range(5):
+            message = Text(Point(10+(20*i),(10+20*j)),"hi!")
+            message.text_colour = "red"
+            message.size = 10
+            message.draw(win)
+    
+
+def draw_patch(win, x, y, colour):
+    for i in range(5):
+        for j in range(5):
+            square = Rectangle(Point(x+(20*i),y+(20*j)),Point(x+(20*(i+1)),y+(20*(j+1))))
+            square.outline_colour = colour
+            square.draw(win)
+    
+    for i in range(5):
+        for j in range(5):
+            message = Text(Point((x+10)+(20*i),(y+10)+(20*j)),"hi!")
+            message.text_colour = colour
+            message.size = 10
+            message.draw(win)
+    
+
+def draw_patchwork():
+    win = Window()
+    for i in range(2):
+        for j in range(3):
+            draw_patch(win,j*100,i*100,"blue")
+    
+    win.get_mouse()
+    win.close()
+
+def eyes_all_around():
+    win = Window("eyes",500,500)
+
+    colour = ["blue","grey","green","brown"]
+    count = 0
+    for x in range(30):
+        pos = win.get_mouse()
+        draw_coloured_eye(win,pos,30,colour[count])
+        count += 1
+        if count == 4:
+            count -= 4
+    
+    win.get_mouse()
+    win.close()
+
+def archery_game():
+    win = Window()
+    score = 0
+    centre = Point(200,200)
+
+    draw_circle(win,centre,180,"blue")
+    draw_circle(win,centre,120,"red")
+    draw_circle(win,centre,60,"yellow")
+
+    for _ in range(5):
+        pos = win.get_mouse()
+        x = pos.x + random.randint(-50,50)
+        y = pos.y + random.randint(-50,50)
+        arrow = Point(x,y)
+
+        draw_circle(win,arrow,5,"black")
+        distance = distance_between_points(centre,arrow)
+        if distance <= 60:
+            score += 10
+        elif distance <= 120:
+            score += 5
+        elif distance <= 180:
+            score += 2
+
+    print(score)
+    win.get_mouse()
+    win.close()
