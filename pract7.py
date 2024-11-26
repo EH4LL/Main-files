@@ -1,5 +1,7 @@
 import time
-from graphix import Window, Circle, Point
+import random
+from graphix import Window, Circle, Point, Text, Entry, Line, Rectangle
+from pract5 import draw_brown_eye, distance_between_points
 
 
 def hello_while():
@@ -197,4 +199,163 @@ def order_price():
         run = input("Is there more (y/n)")
     print("")
     print(f"The total price of the order is £{order:.2f}")
+
+def clickable_eye():
+    win = Window("Clickable eye",500,500)
+    centre = Point(200,200)
+    run = True
+    output = ""
+    draw_brown_eye(win,centre,100)
+    message = Text(Point(200,350),output)
+    message.draw(win)
+    while run:
+        pos = win.get_mouse()
+        distance = distance_between_points(pos,centre)
+        if distance <= 25:
+            output = "pupil"
+        elif distance <= 50:
+            output = "iris"
+        elif distance <= 100:
+            output = "sclera"
+        else:
+            run = False
+            win.close()
         
+        message.text = output
+
+def temperature_converter():
+    win = Window()
+    msg1 = Text(Point(130,100),"Temp to Convert:")
+    msg1.draw(win)
+    msg2 = Text(Point(130,130),"Direction: (C2F/F2C)")
+    msg2.draw(win)
+    msg3 = Text(Point(130,300),"Do you need to convert more? (y/n)")
+    msg3.draw(win)
+    msg4 = Text(Point(195,160),"")
+    msg4.draw(win)
+
+    input_temp = Entry(Point(260, 100), 10)
+    input_temp.draw(win)
+    input_conv = Entry(Point(260, 130), 10)
+    input_conv.draw(win)
+    input_run = Entry(Point(300,300),10)
+    input_run.draw(win)
+
+    while True:
+        if input_conv.text == "C2F":
+            converted = celsius_to_fahrenheit(int(input_temp.text))
+        elif input_conv.text == "F2C":
+            converted = fahrenheit_to_celsius(int(input_temp.text))
+        else:
+            converted = "Invalid conversion"
+        
+        msg4.text = f"Output = {converted}"
+
+        if input_run.text == "n":
+            break
+
+    win.close()
+
+def table_tennis_scorer():
+    win = Window("Table Tennis Scorer")
+    run = True
+    score1 = 0
+    score2 = 0
+
+    divider = Line(Point(200,0),Point(200,400))
+    divider.draw(win)
+
+    player1 = Text(Point(100,200),"0")
+    player1.draw(win)
+    player2 = Text(Point(300,200),"0")
+    player2.draw(win)
+
+    def winner(point):
+        result = Text(point,"Winner")
+        result.draw(win)
+
+    while run:
+        pos = win.get_mouse()
+        if pos.x < 200:
+            score1 += 1
+            player1.text = str(score1)
+        elif pos.x > 200:
+            score2 += 1
+            player2.text = str(score2)
+        else:
+            continue
+        
+        if score1 > 10:
+            if (score1 - 1) > score2:
+                run = False
+                winner(Point(100,300))
+        if score2 > 10:
+            if (score2 - 1) > score1:
+                run = False
+                winner(Point(300,300))
+    
+    win.get_mouse()
+    win.close()
+    
+
+def guess_the_number():
+    num = random.randint(1,100)
+    run = True
+    counter = 0
+    while run:
+        counter += 1
+        if counter > 7:
+            print(f"You lose! The number was {num}")
+            break
+        guess = int(input("Guess the number: "))
+
+        if guess < num:
+            print("Too low")
+        elif guess > num:
+            print("Too high")
+        else:
+            run = False
+            print(f"You won in {counter} attempt(s)")
+
+def clickable_box_of_eyes(rows,columns):
+    width = (columns + 1) * 100
+    height = (rows + 1) * 100
+    
+
+    win = Window("Box of eyes",width,height)
+
+    grid = Rectangle(Point(50,50),Point(width-50,height-50))
+    grid.draw(win)
+
+    message = Text(Point(width//2,height-25),"")
+    message.draw(win)
+
+    for i in range(rows):
+        for j in range(columns):
+            center = Point(100 + (j * 100),100 + (i * 100))
+            draw_brown_eye(win,center,50)
+    
+    in_box = True
+    while in_box:
+        in_eye = False
+
+        pos = win.get_mouse()
+        for i in range(rows):
+            for j in range(columns):
+                center = Point(100 + (j * 100),100 + (i * 100))
+
+                distance = distance_between_points(center,pos)
+                if distance <= 50:
+                    in_eye = True
+                    output = f"Eye at row {i + 1} column {j + 1}"
+        
+        if in_eye:
+            message.text = output
+        else:
+            if pos.x < (width-50) and pos.x > 50:
+                if pos.y < (height-50) and pos.y > 50:
+                    message.text = "Between eyes"
+                else:
+                    in_box = False
+            else:
+                in_box = False
