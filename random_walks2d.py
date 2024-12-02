@@ -1,5 +1,5 @@
 import math
-from random import random
+import random
 
 def get_inputs():
     num_walks = int(input("How many random walks to take? "))
@@ -20,7 +20,7 @@ def take_a_walk(num_steps):
         else:
             step_x -= 1
     
-    distance = math.sqrt(step_x**2 + step_y**2)
+    distance = round(math.sqrt(step_x**2 + step_y**2),2)
         
             
     return (distance)
@@ -33,7 +33,7 @@ def take_walks(num_walks, num_steps):
     return total_steps / num_walks
 
 def print_expected_distance(average_steps):
-    print("The expected number of steps away from the", end=" ")
+    print("The expected distance is", end=" ")
     print("start point is", average_steps)
 
 def main():
