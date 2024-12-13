@@ -85,6 +85,7 @@ def validation(value,valid_list):
     return value
 
 def main():
+    patches = {}
     valid_sizes = ["5","7","9"]
     valid_colours = ["red","green","blue","magenta","orange","purple"]
     #inputs
@@ -109,28 +110,31 @@ def main():
     win = Window("Patchwork",width,height)
     for x in range(0,width,100):
         for y in range(0,height,100):
-
+            pos = Point(x,y)
             #lattices
             if x == y:
-                lattice_patch(win,colour_1,Point(x,y))
+                patch = lattice_patch(win,colour_1,pos)
             elif y == 0:
-                lattice_patch(win,colour_2,Point(x,y))
+                patch = lattice_patch(win,colour_2,pos)
             elif x == width - 100:
-                lattice_patch(win,colour_2,Point(x,y))
+                patch = lattice_patch(win,colour_2,pos)
 
             #plain
             elif x == 0:
-                plain_patch(win,colour_3,Point(x,y))
+                patch = plain_patch(win,colour_3,pos)
             elif y == height - 100:
-                plain_patch(win,colour_3,Point(x,y))
+                patch = plain_patch(win,colour_3,pos)
 
             #triangle + plain in gaps
             elif x > y:
-                plain_patch(win,colour_2,Point(x,y))
+                patch = plain_patch(win,colour_2,pos)
             else:
-                triangle_patch(win,colour_3,Point(x,y))
+                patch = triangle_patch(win,colour_3,pos)
             
-
+            #adding patches to dictionary
+            patches.append(patch,pos)
+            
+    patches(Point(200,100)).undraw(win)
     win.get_mouse()
     win.close()
 
